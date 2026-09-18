@@ -1,0 +1,24 @@
+[
+  {
+    "id":"seed-mte-pat-2026",
+    "title":"PAT: empresas e nutricionistas têm 60 dias para se recadastrar no novo sistema",
+    "summary":"Portaria MTE nº 1.599/2026 estabelece prazo para atualização cadastral dos usuários do Programa de Alimentação do Trabalhador.",
+    "source":"Ministério do Trabalho e Emprego",
+    "url":"https://www.gov.br/trabalho-e-emprego/pt-br/noticias-e-conteudo",
+    "category":"Legislação & Normas",
+    "priority":"ACTION REQUIRED",
+    "published_at":"2026-09-10T00:00:00-03:00",
+    "collected_at":"2026-09-18T00:00:00-03:00"
+  },
+  {
+    "id":"seed-esocial-instabilidade",
+    "title":"Ferramentas Download e Relatórios Gerenciais apresentam instabilidade",
+    "summary":"O eSocial informou instabilidades em algumas solicitações de Download e Relatórios Gerenciais e registrou atualizações sobre a normalização do serviço.",
+    "source":"eSocial",
+    "url":"https://www.gov.br/esocial/pt-br/noticias/ferramentas-download-e-relatorios-gerenciais-apresentam-instabilidade/",
+    "category":"eSocial & Folha",
+    "priority":"ATTENTION",
+    "published_at":"2026-08-27T17:11:00-03:00",
+    "collected_at":"2026-09-18T00:00:00-03:00"
+  }
+]
