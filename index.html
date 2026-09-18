@@ -3,47 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#10131a">
-  <meta name="description" content="Radar RH | RAJA — notícias e atualizações relevantes para Recursos Humanos no Brasil.">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="description" content="Radar RH | RAJA — informação que vira ação.">
   <title>Radar RH | RAJA</title>
+  <link rel="icon" href="assets/logo-raja.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">R</div>
+      <div class="brand-logo"><img src="assets/logo-raja.png" alt="RAJA"></div>
       <div>
         <div class="brand-name">RADAR RH</div>
         <div class="brand-sub">RAJA · informação que vira ação</div>
       </div>
     </div>
     <div class="header-actions">
-      <span id="lastUpdated" class="last-updated">Carregando...</span>
-      <button id="refreshBtn" class="btn btn-primary">Atualizar agora</button>
+      <div class="sync-info"><span class="status-dot"></span><span id="syncStatus">Monitorando fontes</span><small id="lastUpdated">Carregando...</small></div>
+      <button id="refreshBtn" class="btn btn-primary">Recarregar</button>
     </div>
   </header>
-
   <main class="container">
     <section class="hero">
-      <div>
+      <div class="hero-copy-wrap">
         <p class="eyebrow">CENTRAL DE INTELIGÊNCIA DO RH</p>
         <h1>O que o RH precisa saber hoje?</h1>
-        <p class="hero-copy">Notícias, legislação, eSocial, mercado de trabalho, gestão de pessoas e tecnologia em um único radar — com histórico permanente.</p>
+        <p class="hero-copy">Legislação, eSocial, relações de trabalho, mercado, gestão de pessoas e tecnologia em um único radar — com histórico permanente.</p>
+        <div class="hero-pills"><span>● Fontes oficiais</span><span>● Arquivo permanente</span><span>● Coleta automática</span></div>
       </div>
+      <img class="hubble" src="assets/hubble.jpg" alt="Hubble, mascote do Radar RH" loading="eager">
       <div class="hero-stats">
         <div><strong id="totalCount">0</strong><span>no arquivo</span></div>
         <div><strong id="unreadCount">0</strong><span>não lidas</span></div>
+        <div><strong id="newCount">0</strong><span>novas na visita</span></div>
       </div>
     </section>
-
     <section class="toolbar">
-      <div class="search-wrap">
-        <input id="search" type="search" placeholder="Buscar por assunto, título ou fonte...">
-      </div>
+      <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar por assunto, título ou fonte..."></div>
       <select id="category">
         <option value="all">Todas as categorias</option>
         <option value="Legislação &amp; Normas">Legislação &amp; Normas</option>
         <option value="eSocial &amp; Folha">eSocial &amp; Folha</option>
+        <option value="Previdência &amp; Benefícios">Previdência &amp; Benefícios</option>
         <option value="Mercado de Trabalho">Mercado de Trabalho</option>
         <option value="Gestão de Pessoas">Gestão de Pessoas</option>
         <option value="R&amp;S">R&amp;S</option>
@@ -51,36 +52,17 @@
         <option value="Saúde &amp; Bem-estar">Saúde &amp; Bem-estar</option>
       </select>
       <select id="status">
-        <option value="all">Todas</option>
-        <option value="unread">Não lidas</option>
-        <option value="read">Lidas</option>
-        <option value="saved">Salvas</option>
+        <option value="all">Todas</option><option value="unread">Não lidas</option><option value="read">Lidas</option><option value="saved">Salvas</option><option value="new">Novas na visita</option>
       </select>
     </section>
-
-    <section class="notice">
-      <div class="notice-icon">✓</div>
-      <div><strong>Histórico permanente</strong><span>As notícias não desaparecem quando você as lê. O status de leitura é salvo apenas no seu navegador.</span></div>
-    </section>
-
+    <section class="notice"><div class="notice-icon">✓</div><div><strong>Histórico permanente</strong><span>As notícias nunca são removidas quando você lê. O status de leitura e os favoritos ficam salvos somente neste navegador.</span></div></section>
     <section>
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">RADAR</p>
-          <h2>Últimas atualizações</h2>
-        </div>
-        <div id="resultCount" class="result-count"></div>
-      </div>
-      <div id="newsList" class="news-grid"></div>
-      <div id="empty" class="empty" hidden>Nenhuma notícia encontrada com esses filtros.</div>
+      <div class="section-head"><div><p class="eyebrow">RADAR</p><h2>Últimas atualizações</h2></div><div id="resultCount" class="result-count"></div></div>
+      <div id="newsList" class="news-list"></div><div id="empty" class="empty" hidden>Nenhuma notícia encontrada com esses filtros.</div>
     </section>
   </main>
-
-  <footer>
-    <div>Radar RH | RAJA</div>
-    <div>Fontes oficiais e públicas · Atualização automática via GitHub Actions</div>
-  </footer>
-
+  <div id="articleModal" class="modal" hidden><div class="modal-backdrop" data-close-modal></div><article class="modal-card"><button class="modal-close" data-close-modal aria-label="Fechar">×</button><div id="modalContent"></div></article></div>
+  <footer><div><strong>Radar RH | RAJA</strong> · informação que vira ação</div><div>Fontes públicas · coleta automática pelo GitHub Actions</div></footer>
   <script src="app.js"></script>
 </body>
 </html>
