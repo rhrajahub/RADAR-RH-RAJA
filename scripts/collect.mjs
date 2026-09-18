@@ -1,38 +1,22 @@
 import fs from "node:fs/promises";
 
 const SOURCES=[
- {name:"Ministério do Trabalho e Emprego",url:"https://www.gov.br/trabalho-e-emprego/pt-br/noticias-e-conteudo",category:"Legislação & Normas"},
- {name:"eSocial",url:"https://www.gov.br/esocial/pt-br/noticias",category:"eSocial & Folha"},
+ {name:"Ministério do Trabalho e Emprego",url:"https://www.gov.br/trabalho-e-emprego/pt-br/noticias-e-conteudo",feed:"https://www.gov.br/trabalho-e-emprego/pt-br/noticias-e-conteudo/RSS",category:"Legislação & Normas"},
+ {name:"eSocial",url:"https://www.gov.br/esocial/pt-br/noticias",feed:"https://www.gov.br/esocial/pt-br/noticias/RSS",category:"eSocial & Folha"},
+ {name:"Ministério da Previdência Social",url:"https://www.gov.br/previdencia/pt-br/noticias",feed:"https://www.gov.br/previdencia/pt-br/noticias/RSS",category:"Previdência & Benefícios"},
+ {name:"INSS",url:"https://www.gov.br/inss/pt-br/noticias",feed:"https://www.gov.br/inss/pt-br/noticias/RSS",category:"Previdência & Benefícios"},
  {name:"CNI — Conexão Trabalho",url:"https://conexaotrabalho.portaldaindustria.com.br/",category:"Mercado de Trabalho"},
- {name:"Câmara dos Deputados",url:"https://www.camara.leg.br/assuntos/trabalho-previdencia-e-assistencia",category:"Legislação & Normas"}
+ {name:"Câmara dos Deputados",url:"https://www.camara.leg.br/assuntos/trabalho-previdencia-e-assistencia",category:"Legislação & Normas"},
+ {name:"Tribunal Superior do Trabalho",url:"https://www.tst.jus.br/web/guest/noticias",category:"Legislação & Normas"}
 ];
-
-const headers={"User-Agent":"Radar-RH-RAJA/1.0 (+https://github.com/rhrajahub/RADAR-RH-RAJA)"};
-const clean=s=>String(s||"").replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\\s+/g," ").trim();
-const slug=s=>s.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-function extract(html,source,base,category){
- const out=[],seen=new Set();
- const re=/<a[^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi; let m;
- while((m=re.exec(html))!==null){
-   const title=clean(m[2]); if(title.length<35||title.length>220)continue;
-   let url;try{url=new URL(m[1],base).href}catch{continue}
-   if(!url.startsWith("https://")||seen.has(url))continue;
-   const t=(title+" "+url).toLowerCase();
-   if(!/(trabalho|emprego|rh|recursos humanos|esocial|fgts|férias|ferias|salario|salário|clt|legis|jornada|beneficio|benefício|caged|pat|segur|previd|saude|saúde|gestao|gestão|contrat|demiss|deslig|aprendiz|estag|igualdade|assédio|assédio)/i.test(t))continue;
-   seen.add(url);out.push({id:slug(source+"-"+title),title,summary:"Atualização identificada na fonte oficial. Abra a publicação para consultar o conteúdo completo.",source,url,category,priority:"KNOWLEDGE",published_at:null,collected_at:new Date().toISOString()});
-   if(out.length>=25)break;
- }
- return out;
-}
-const existing=JSON.parse(await fs.readFile("data/articles.json","utf8"));
-const byId=new Map(existing.map(a=>[a.id,a]));
-for(const src of SOURCES){
- try{
-   const r=await fetch(src.url,{headers}); if(!r.ok)continue;
-   const html=await r.text();
-   for(const a of extract(html,src.name,src.url,src.category))byId.set(a.id,{...a,...(byId.get(a.id)||{})});
- }catch(e){console.log("source failed",src.name,e.message)}
-}
-const all=[...byId.values()].sort((a,b)=>new Date(b.published_at||b.collected_at)-new Date(a.published_at||a.collected_at));
-await fs.writeFile("data/articles.json",JSON.stringify(all.slice(0,1000),null,2)+"\n");
-console.log("Radar atualizado:",all.length,"artigos");
+const headers={"User-Agent":"Radar-RH-RAJA/1.0 (+https://github.com/rhrajahub/RADAR-RH-RAJA)","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"};
+const clean=s=>String(s||"").replace(/<!\[CDATA\[|\]\]>/g,"").replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'").replace(/\s+/g," ").trim();
+const slug=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const relevant=t=>/(trabalho|emprego|rh|recursos humanos|esocial|fgts|férias|ferias|salário|salario|clt|jornada|benefício|beneficio|caged|pat|previd|saúde|saude|gestão|gestao|contrat|demiss|deslig|aprendiz|estag|igualdade|assédio|sindical|sindicato|previdenci|aposent|maternidade|acidente|segurança|seguranca|norma regulamentadora|nr-|teletrabalho|home office|remuneração|remuneracao|pessoa com deficiência|pcd)/i.test(t);
+function inferPriority(title,summary=""){const t=(title+" "+summary).toLowerCase();if(/prazo|obrigat|entra em vigor|vigência|vigencia|recadastr|regulariz|penalidade|deadline/.test(t))return"ACTION REQUIRED";if(/instabil|alteração|alteracao|atualiza|mudança|mudanca|novo sistema|erro|atenção|atencao|suspens/.test(t))return"ATTENTION";if(/stf|tst|câmara|camara|projeto|decisão|decisao|julgamento|congresso/.test(t))return"FOLLOW";return"KNOWLEDGE";}
+function parseDate(v){if(!v)return null;const d=new Date(clean(v));return Number.isNaN(d.getTime())?null:d.toISOString();}
+function extractFeed(xml,source){const out=[],seen=new Set();const items=xml.match(/<item\b[\s\S]*?<\/item>/gi)||xml.match(/<entry\b[\s\S]*?<\/entry>/gi)||[];for(const item of items){const title=clean((item.match(/<title[^>]*>([\s\S]*?)<\/title>/i)||[])[1]);if(title.length<18||title.length>260||!relevant(title))continue;let url=(item.match(/<link[^>]*>([\s\S]*?)<\/link>/i)||[])[1];if(!url)url=(item.match(/<link[^>]+href=["']([^"']+)["']/i)||[])[1];url=clean(url);if(!url||!/^https?:\/\//i.test(url)||seen.has(url))continue;const desc=clean((item.match(/<(description|summary|content)[^>]*>([\s\S]*?)<\/(description|summary|content)>/i)||[])[2]||"");const date=parseDate((item.match(/<(pubDate|published|updated|date)[^>]*>([\s\S]*?)<\/(pubDate|published|updated|date)>/i)||[])[2]);seen.add(url);out.push({id:slug(source.name+"-"+url),title,summary:desc.slice(0,320)||"Atualização identificada na fonte oficial. Consulte a publicação original.",source:source.name,url,category:source.category,priority:inferPriority(title,desc),published_at:date,collected_at:new Date().toISOString()});if(out.length>=40)break}return out;}
+function extractHtml(html,source){const out=[],seen=new Set();const re=/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;while((m=re.exec(html))!==null){const title=clean(m[2]);if(title.length<25||title.length>260||!relevant(title))continue;let url;try{url=new URL(m[1],source.url).href}catch{continue}if(!/^https?:\/\//i.test(url)||seen.has(url)||url.includes("/busca"))continue;seen.add(url);out.push({id:slug(source.name+"-"+url),title,summary:"Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",source:source.name,url,category:source.category,priority:inferPriority(title),published_at:null,collected_at:new Date().toISOString()});if(out.length>=40)break}return out;}
+const existing=JSON.parse(await fs.readFile("data/articles.json","utf8"));const byId=new Map(existing.map(a=>[a.id,a]));
+for(const src of SOURCES){let got=0;try{if(src.feed){const r=await fetch(src.feed,{headers});if(r.ok){const xml=await r.text();const items=extractFeed(xml,src);for(const a of items){byId.set(a.id,{...a,...(byId.get(a.id)||{})});got++;}}}if(!got){const r=await fetch(src.url,{headers});if(r.ok){const html=await r.text();for(const a of extractHtml(html,src))byId.set(a.id,{...a,...(byId.get(a.id)||{})});}}}catch(e){console.log("source failed",src.name,e.message);}}
+const all=[...byId.values()].sort((a,b)=>new Date(b.published_at||b.collected_at)-new Date(a.published_at||a.collected_at));await fs.writeFile("data/articles.json",JSON.stringify(all.slice(0,2000),null,2)+"\n");console.log("Radar atualizado:",all.length,"artigos");
