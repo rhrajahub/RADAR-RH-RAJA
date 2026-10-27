@@ -1,5 +1,27 @@
 [
   {
+    "id": "esocial-https-www-gov-br-pt-br-noticias-financas-impostos-e-gestao-publica",
+    "title": "Economia e Gestão Pública",
+    "summary": "Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",
+    "source": "eSocial",
+    "url": "https://www.gov.br/pt-br/noticias/financas-impostos-e-gestao-publica",
+    "category": "eSocial & Folha",
+    "priority": "KNOWLEDGE",
+    "published_at": null,
+    "collected_at": "2026-10-27T01:26:27.531Z"
+  },
+  {
+    "id": "ministerio-do-trabalho-e-emprego-https-www-gov-br-pt-br-noticias-financas-impostos-e-gestao-publica",
+    "title": "Economia e Gestão Pública",
+    "summary": "Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",
+    "source": "Ministério do Trabalho e Emprego",
+    "url": "https://www.gov.br/pt-br/noticias/financas-impostos-e-gestao-publica",
+    "category": "Legislação & Normas",
+    "priority": "KNOWLEDGE",
+    "published_at": null,
+    "collected_at": "2026-10-27T01:26:26.650Z"
+  },
+  {
     "id": "ministerio-da-previdencia-social-https-www-gov-br-previdencia-pt-br-assuntos-publicacoes-livro-os-100-anos-da-previdencia-social",
     "title": "Livro: \"Os 100 anos da Previdência Social\"",
     "summary": "Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",
