@@ -1,5 +1,16 @@
 [
   {
+    "id": "inss-https-www-gov-br-pt-br-noticias-financas-impostos-e-gestao-publica",
+    "title": "Economia e Gestão Pública",
+    "summary": "Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",
+    "source": "INSS",
+    "url": "https://www.gov.br/pt-br/noticias/financas-impostos-e-gestao-publica",
+    "category": "Previdência & Benefícios",
+    "priority": "KNOWLEDGE",
+    "published_at": null,
+    "collected_at": "2026-10-27T06:47:47.576Z"
+  },
+  {
     "id": "esocial-https-www-gov-br-pt-br-noticias-financas-impostos-e-gestao-publica",
     "title": "Economia e Gestão Pública",
     "summary": "Atualização identificada na fonte oficial. Consulte a publicação original para o conteúdo completo.",
